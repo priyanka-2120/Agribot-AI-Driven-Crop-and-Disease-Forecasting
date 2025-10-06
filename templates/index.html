@@ -1,0 +1,49 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>AgriBot</title>
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='css/style.css') }}"
+    />
+  </head>
+  <body>
+    <div class="container">
+      <div class="chat-header">
+        <h1>AGRIBOT</h1>
+      </div>
+      <div class="language-selection">
+        <label for="language">Select Language: </label>
+        <select id="language" onchange="changeLanguage()">
+          <option value="en">English</option>
+          <option value="hi">हिन्दी (Hindi)</option>
+          <option value="te">తెలుగు (Telugu)</option>
+        </select>
+      </div>
+      <div class="chat-box" id="chatBox">
+        <div class="message bot-message">
+          <p>Welcome to AgriBot! Ask your farming questions.</p>
+        </div>
+      </div>
+      <div class="input-box">
+        <input
+          type="text"
+          id="userInput"
+          placeholder="Type your message..."
+          onkeypress="if(event.keyCode==13) sendMessage()"
+        />
+        <button onclick="sendMessage()">Send</button>
+        <button onclick="downloadChat()" class="download-btn">
+          Download Chat History
+        </button>
+      </div>
+      <div id="imageUpload" style="display: none">
+        <input type="file" id="imageInput" accept="image/*" />
+        <button onclick="uploadImage()">Upload Image</button>
+      </div>
+    </div>
+    <script src="{{ url_for('static', filename='js/script.js') }}"></script>
+  </body>
+</html>
