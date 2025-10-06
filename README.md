@@ -1,4 +1,1 @@
-Simple AI chatbot that helps farmers with crop suggestions and plant disease detection.
-– Empowering farmers with real-time crop recommendations based on soil parameters and early disease detection.
-– Multilingual chatbot interface for accessibility.  
-– Technologies Used: Python, XGBoost, ResNet-based CNN, Flask.
+Simple AI chatbot that helps farmers with crop suggestions and plant disease detection.Empowering farmers with real-time crop recommendations based on soil parameters and early disease detection.Multilingual chatbot interface for accessibility.Technologies Used: Python, XGBoost, ResNet-based CNN, Flask.
