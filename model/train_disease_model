@@ -1,0 +1,72 @@
+import tensorflow as tf
+from tensorflow.keras.applications import ResNet50
+from tensorflow.keras.layers import Dense, GlobalAveragePooling2D
+from tensorflow.keras.models import Model
+from tensorflow.keras.preprocessing.image import ImageDataGenerator
+
+# Define image size and batch size
+IMG_SIZE = (224, 224)
+BATCH_SIZE = 4  # Reduced to handle small dataset
+
+# Data augmentation and preprocessing
+train_datagen = ImageDataGenerator(
+    rescale=1./255,
+    rotation_range=20,
+    width_shift_range=0.2,
+    height_shift_range=0.2,
+    shear_range=0.2,
+    zoom_range=0.2,
+    horizontal_flip=True,
+    fill_mode='nearest',
+    validation_split=0.2
+)
+
+# Load the dataset
+train_generator = train_datagen.flow_from_directory(
+    "datasets/plant_disease_images",
+    target_size=IMG_SIZE,
+    batch_size=BATCH_SIZE,
+    class_mode='categorical',
+    subset='training'
+)
+
+validation_generator = train_datagen.flow_from_directory(
+    "datasets/plant_disease_images",
+    target_size=IMG_SIZE,
+    batch_size=BATCH_SIZE,
+    class_mode='categorical',
+    subset='validation'
+)
+
+# Load ResNet50 model
+base_model = ResNet50(weights='imagenet', include_top=False, input_shape=(224, 224, 3))
+x = base_model.output
+x = GlobalAveragePooling2D()(x)
+x = Dense(128, activation='relu')(x)
+predictions = Dense(train_generator.num_classes, activation='softmax')(x)
+
+# Define the model
+model = Model(inputs=base_model.input, outputs=predictions)
+
+# Freeze the base model layers
+for layer in base_model.layers:
+    layer.trainable = False
+
+# Compile the model
+model.compile(optimizer='adam', loss='categorical_crossentropy', metrics=['accuracy'])
+
+# Train the model
+model.fit(
+    train_generator,
+    validation_data=validation_generator,
+    epochs=10
+)
+
+# Save the model
+model.save("model/disease_model.h5")
+
+# Save the class labels
+with open("model/disease_labels.txt", "w") as f:
+    f.write("\n".join(train_generator.class_indices.keys()))
+
+print("Disease detection model trained and saved successfully.")
